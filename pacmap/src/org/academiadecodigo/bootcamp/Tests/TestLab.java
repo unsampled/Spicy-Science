@@ -4,7 +4,9 @@ import org.academiadecodigo.bootcamp.Player;
 
 public class TestLab {
     public static void main(String[] args) {
-        Player p1 = new Player();
+        PlayerTest p1 = new PlayerTest();
+
+
 
     }
 }
