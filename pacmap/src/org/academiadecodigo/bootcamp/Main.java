@@ -1,5 +1,7 @@
 package org.academiadecodigo.bootcamp;
 
+import org.academiadecodigo.bootcamp.grid.PacGrid;
+
 public class Main {
 
 
@@ -10,6 +12,7 @@ public class Main {
         game.init();
         game.start();
 
+       // Wall wall= new Wall(0,0,new PacGrid(50,50));
     }
 
 
