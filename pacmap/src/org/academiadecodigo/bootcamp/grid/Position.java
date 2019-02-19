@@ -1,6 +1,7 @@
 package org.academiadecodigo.bootcamp.grid;
 
 import org.academiadecodigo.bootcamp.grid.position.AbstractGridPosition;
+import org.academiadecodigo.bootcamp.grid.position.GridPosition;
 
 public class Position extends AbstractGridPosition {
 
@@ -27,5 +28,10 @@ public class Position extends AbstractGridPosition {
     @Override
     public void hide() {
 
+    }
+
+    @Override
+    public boolean equals(GridPosition pos) {
+return false;
     }
 }
