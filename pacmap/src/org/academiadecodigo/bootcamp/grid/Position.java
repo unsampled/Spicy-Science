@@ -7,7 +7,6 @@ public class Position extends AbstractGridPosition {
     private PacGrid grid;
 
 
-
     public Position(PacGrid grid){
         super((int) (Math.random() * grid.getCols()), (int) (Math.random() * grid.getRows()), grid);
         this.grid = grid;
