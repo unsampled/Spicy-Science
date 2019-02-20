@@ -13,7 +13,13 @@ public class Dot extends Item implements Shape, Colorable, Fillable {
 
     public Dot(Position position) {
         super(position);
-        ellipse = new Ellipse(position.getRow(), position.getCol(), 5, 5);
+        int size = 10;
+
+        int elliX = Map.pacGrid.columnToX(position.getCol())+(Map.pacGrid.getCellSize()/2-(size/2));
+        int elliY = Map.pacGrid.rowToY(position.getRow())+(Map.pacGrid.getCellSize()/2-(size/2));
+
+        ellipse = new Ellipse(elliX, elliY, size, size);
+        draw();
     }
 
     @Override
@@ -37,7 +43,7 @@ public class Dot extends Item implements Shape, Colorable, Fillable {
     }
 
     public void draw() {
-        ellipse.draw();
+        ellipse.fill();
     }
 
     @Override

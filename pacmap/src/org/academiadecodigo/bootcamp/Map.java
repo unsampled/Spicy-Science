@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 public class Map {
     private HashMap<Position, Wall> walls;
-    private PacGrid pacGrid;
+    public static PacGrid pacGrid;
 
 
     public Map() {
