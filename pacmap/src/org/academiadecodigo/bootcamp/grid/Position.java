@@ -31,6 +31,17 @@ public class Position extends AbstractGridPosition {
 
     @Override
     public boolean equals(GridPosition pos) {
-return false;
+        if (getCol() == pos.getCol() && getRow() == pos.getRow()){
+            return true;
+        }
+        return  false;
+    }
+
+    @Override
+    public int hashCode() {
+        Integer col = getCol();
+        Integer row = getRow();
+        String coordinates = col.toString() + "." + row.toString();
+        return coordinates.hashCode();
     }
 }
