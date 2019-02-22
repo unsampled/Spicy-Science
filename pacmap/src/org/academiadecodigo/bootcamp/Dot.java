@@ -1,6 +1,5 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.bootcamp.grid.Position;
 import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Ellipse;
 

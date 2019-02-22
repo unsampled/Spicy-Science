@@ -1,6 +1,5 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.bootcamp.grid.Position;
 import org.academiadecodigo.simplegraphics.graphics.Shape;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 

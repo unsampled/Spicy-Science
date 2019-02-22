@@ -1,7 +1,5 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.bootcamp.grid.Position;
-
 public interface Movable {
 
     boolean comparePos(Position that);

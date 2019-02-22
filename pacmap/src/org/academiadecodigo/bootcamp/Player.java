@@ -1,8 +1,5 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.bootcamp.grid.Grid;
-import org.academiadecodigo.bootcamp.grid.PacGrid;
-import org.academiadecodigo.bootcamp.grid.Position;
 import org.academiadecodigo.simplegraphics.keyboard.Keyboard;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEvent;
 import org.academiadecodigo.simplegraphics.keyboard.KeyboardEventType;
