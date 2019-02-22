@@ -11,7 +11,7 @@ public abstract class Item {
     }
 
     public Item(int col, int row){
-        position = new Position(col, row, Map.pacGrid);
+      //  position = new Position(col, row, Map.pacGrid);
 
     }
 

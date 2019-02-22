@@ -8,16 +8,16 @@ public class Dot extends Item implements Consumable {
 
     private Ellipse ellipse;
     private boolean consumed;
-    final int SIZE;
+   // final int SIZE;
 
     public Dot(Position position) {
         super(position);
-         SIZE = Map.pacGrid.getCellSize()/2;
+        // SIZE = Map.pacGrid.getCellSize()/2;
 
-        int elliX = Map.pacGrid.columnToX(position.getCol());
-        int elliY = Map.pacGrid.rowToY(position.getRow());
+        //int elliX = Map.pacGrid.columnToX(position.getCol());
+        //int elliY = Map.pacGrid.rowToY(position.getRow());
 
-        ellipse = new Ellipse(elliX + Map.pacGrid.getPadding(), elliY - Map.pacGrid.getPadding()/2, SIZE, SIZE);
+        //ellipse = new Ellipse(elliX + Map.pacGrid.getPadding(), elliY - Map.pacGrid.getPadding()/2, SIZE, SIZE);
 
         show();
     }

@@ -45,7 +45,7 @@ public class Enemy implements org.academiadecodigo.bootcamp.Movable {
     @Override
     public void moveUp(CurrentImageType currentImage) {
         this.position.setPos(col,row--);
-        this.pic.translate(0,-Map.pacGrid.getCellSize());
+       // this.pic.translate(0,-Map.pacGrid.getCellSize());
     }
 
     @Override
