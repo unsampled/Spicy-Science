@@ -19,7 +19,4 @@ public abstract class Item {
         return position;
     }
 
-    public abstract void draw();
-
-    public abstract boolean isSpecial();
 }

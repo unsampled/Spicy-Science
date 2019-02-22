@@ -6,5 +6,7 @@ public interface Consumable {
 
     void hide();
 
-    void getType();
+    ConsumableType getType();
+
+    boolean isConsumed();
 }

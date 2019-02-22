@@ -16,8 +16,8 @@ public class ItemTest {
         Position position = new Position(2,2, grid);
         grid.init();
         Dot dot = new Dot(position);
-        dot.setColor(Color.WHITE);
-        dot.fill();
-        Canvas.getInstance().getShapes().add(dot);
+       //dot.setColor(Color.WHITE);
+       // dot.fill();
+       // Canvas.getInstance().getShapes().add(dot);
     }
 }

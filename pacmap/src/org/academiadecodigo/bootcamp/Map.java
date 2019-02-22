@@ -11,9 +11,9 @@ public class Map {
 
 
     public Map() {
-        walls = new HashMap();
+        walls = new HashMap<>();
         this.pacGrid = new PacGrid(53, 31);
-        //pacGrid.init();
+        pacGrid.init();
         outsideWalls();
         centerWalls();
     }

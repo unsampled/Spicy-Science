@@ -55,8 +55,4 @@ public class Beer extends Item implements Shape {
         picture.paintShape(graphics2D);
     }
 
-    @Override
-    public boolean isSpecial() {
-        return true;
-    }
 }

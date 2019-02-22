@@ -88,6 +88,10 @@ public class PacGrid implements Grid {
             return CELLSIZE;
         }
 
+        public int getPadding(){
+            return PADDING;
+        }
+
 
         public Position makePosition() {
 
