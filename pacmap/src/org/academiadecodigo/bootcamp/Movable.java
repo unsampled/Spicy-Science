@@ -4,7 +4,7 @@ import org.academiadecodigo.bootcamp.grid.Position;
 
 public interface Movable {
 
-    void comparePos(Position that);
+    boolean comparePos(Position that);
 
     boolean hasCollided();
 

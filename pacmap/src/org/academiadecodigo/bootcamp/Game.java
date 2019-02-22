@@ -4,14 +4,14 @@ public class Game {
 
     private Map map;
     private Player player1;
-    private Enemy[] enemies;
+//    private Enemy[] enemies;
     private Item[] items;
 
 
     public void init() {
 
         this.map = new Map();
-      //  this.player1 = new Player();
+        this.player1 = new Player(map.getGrid(),map);
       //  this.enemies = new Enemy[5];
       //  this.items = new Item[70];
 
@@ -32,10 +32,10 @@ public class Game {
 
     }
 
-    public void popEnemies(){
+    /*public void popEnemies(){
         for(int i =0; i< enemies.length; i++){
          //   enemies[i] = new Enemy(1,i+1,Map.pacGrid);
             enemies[i].move();
         }
-    }
+    }*/
 }
