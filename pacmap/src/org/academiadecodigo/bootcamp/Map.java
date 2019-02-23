@@ -1,9 +1,7 @@
 package org.academiadecodigo.bootcamp;
 
-
 import org.academiadecodigo.simplegraphics.graphics.Color;
 import org.academiadecodigo.simplegraphics.graphics.Rectangle;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,8 +9,8 @@ import java.io.IOException;
 
 public class Map {
 
-    private final int TOTAL_COLS = 53;
-    private final int TOTAL_ROWS = 31;
+    private final int TOTAL_COLS = 33;
+    private final int TOTAL_ROWS = 21;
     private final int CELL_SIZE = 25;
     private final int PADDING = 10;
     private Cell[][] grid;
@@ -25,7 +23,6 @@ public class Map {
         field.fill();
         grid = new Cell[TOTAL_COLS][TOTAL_ROWS];
         popCells();
-       // drawWalls();
 
         try {
             load("/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Saves/save.txt");
@@ -70,25 +67,6 @@ public class Map {
     }
 
 
-    public void drawWalls() {
-
-        //OUTER LIMITS
-        for (int i = 0; i < TOTAL_COLS; i++) {
-            Wall topWall = new Wall(grid[i][0], this);
-            Wall bottomWall = new Wall(grid[i][TOTAL_ROWS - 1], this);
-        }
-
-        for (int i = 0; i < TOTAL_ROWS; i++) {
-            Wall leftWall = new Wall(grid[0][i], this);
-            Wall rightWall = new Wall(grid[TOTAL_COLS - 1][i], this);
-        }
-
-
-        //set cells to not free
-        //draw walls/remove walls
-
-    }
-
     public void load(String file) throws IOException {
         FileReader fileReader = new FileReader(file);
         BufferedReader buffRead = new BufferedReader(fileReader);
@@ -97,20 +75,24 @@ public class Map {
         field = new Rectangle(PADDING, PADDING, colToX(TOTAL_COLS) - PADDING, rowToY(TOTAL_ROWS) - PADDING);
         field.setColor(Color.BLACK);
         field.fill();
-        drawWalls();
 
         int x = 0;
         for (int o = 0; o < TOTAL_COLS; o++) {
             for (int i = 0; i < TOTAL_ROWS; i++) {
-                grid[o][i].setEmpty(true);
-
+                grid[o][i].setEmpty();
 
                 if (loadedCell.charAt(x++) == '1') {
-                    Wall wall = new Wall(grid[o][i],this);
-                    grid[o][i].setEmpty(false);
+
+                    grid[o][i].setFull();
                 }
+            }
+        }
 
-
+        for (int o = 0; o < TOTAL_COLS; o++) {
+            for (int i = 0; i < TOTAL_ROWS; i++) {
+                if (!grid[o][i].isEmpty()) {
+                    new Wall(grid[o][i], this);
+                }
             }
         }
         System.out.println("File Loaded");

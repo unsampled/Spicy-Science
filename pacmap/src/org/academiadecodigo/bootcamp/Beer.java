@@ -1,57 +1,65 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.simplegraphics.graphics.Shape;
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-import java.awt.*;
 
-public class Beer extends Item implements Shape {
+public class Beer extends Item implements Consumable {
 
     private Picture picture;
+    private int x;
+    private int y;
+    private Cell position;
+    private int row;
+    private int col;
 
-    public Beer(Position position) {
-        super(position);
-        picture = new Picture(position.getRow(), position.getCol(), "beer.jpg");
+    private Map map;
+
+    private boolean consumed;
+
+    public Beer(Cell position, Map map) {
+        super(position, map);
+        consumed = false;
+        this.position = position;
+        row = position.getRow();
+        col = position.getCol();
+        this.x = map.colToX(position.getCol());
+        this.y = map.rowToY(position.getRow());
+        this.position = position;
+        this.map = map;
+        picture = new Picture(x, y, "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/beer.png");
+        show();
     }
 
-    @Override
-    public int getX() {
-        return picture.getX();
-    }
 
     @Override
-    public int getY() {
-        return picture.getY();
-    }
-
-    @Override
-    public int getWidth() {
-        return picture.getWidth();
-    }
-
-    @Override
-    public int getHeight() {
-        return picture.getHeight();
-    }
-
-    @Override
-    public void draw() {
+    public void show() {
         picture.draw();
     }
 
     @Override
-    public void delete() {
+    public void hide() {
         picture.delete();
     }
 
     @Override
-    public void grow(double v, double v1) {
-        picture.grow(v, v1);
+    public ConsumableType getType() {
+        return ConsumableType.BEER;
     }
 
     @Override
-    public void paintShape(Graphics2D graphics2D) {
-        picture.paintShape(graphics2D);
+    public boolean isConsumed() {
+        return consumed;
+    }
+
+
+    @Override
+    public void consume() {
+        this.consumed = true;
+        hide();
+    }
+
+    public Cell getPosition() {
+        return position;
     }
 
 }

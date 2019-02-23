@@ -9,4 +9,6 @@ public interface Consumable {
     ConsumableType getType();
 
     boolean isConsumed();
+
+    void consume();
 }

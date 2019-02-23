@@ -1,43 +1,60 @@
 package org.academiadecodigo.bootcamp;
 
-import org.academiadecodigo.simplegraphics.graphics.Color;
-import org.academiadecodigo.simplegraphics.graphics.Ellipse;
+import org.academiadecodigo.simplegraphics.pictures.Picture;
 
 public class Dot extends Item implements Consumable {
 
-    private Ellipse ellipse;
+    private Picture picture;
+    private int x;
+    private int y;
+    private Cell position;
+    private int row;
+    private int col;
+
+
+    private Map map;
+
     private boolean consumed;
-   // final int SIZE;
 
-    public Dot(Position position) {
-        super(position);
-        // SIZE = Map.pacGrid.getCellSize()/2;
 
-        //int elliX = Map.pacGrid.columnToX(position.getCol());
-        //int elliY = Map.pacGrid.rowToY(position.getRow());
-
-        //ellipse = new Ellipse(elliX + Map.pacGrid.getPadding(), elliY - Map.pacGrid.getPadding()/2, SIZE, SIZE);
-
-        show();
+    public Dot(Cell position, Map map) {
+        super(position, map);
+        row = position.getRow();
+        col = position.getCol();
+        this.x = map.colToX(position.getCol());
+        this.y = map.rowToY(position.getRow());
+        this.position = position;
+        this.map = map;
+        picture = new Picture(x,y,"/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/yellow-dot.png");
     }
 
     @Override
     public void show() {
-        ellipse.setColor(Color.YELLOW);
-        ellipse.fill();
+        picture.draw();
     }
 
     @Override
     public void hide() {
-        ellipse.delete();
+        picture.delete();
     }
 
+    @Override
     public ConsumableType getType() {
-        return ConsumableType.BASIC;
+        return ConsumableType.DOT;
     }
 
     @Override
     public boolean isConsumed() {
         return consumed;
+    }
+
+    @Override
+    public void consume() {
+        this.consumed = true;
+        hide();
+    }
+
+    public Cell getPosition() {
+        return position;
     }
 }

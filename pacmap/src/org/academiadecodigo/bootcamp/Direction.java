@@ -1,9 +1,9 @@
-package org.academiadecodigo.bootcamp.grid;
+package org.academiadecodigo.bootcamp;
 
 /**
  * The directions in which positions may move
  */
-public enum GridDirection {
+public enum Direction {
     UP,
     DOWN,
     LEFT,
@@ -15,7 +15,7 @@ public enum GridDirection {
      * @param dir the direction to compare with
      * @return true if directions are opposite
      */
-    public boolean isOpposite(GridDirection dir) {
+    public boolean isOpposite(Direction dir) {
         return dir.equals(oppositeDirection());
     }
 
@@ -24,22 +24,22 @@ public enum GridDirection {
      *
      * @return the opposite direction
      */
-    public GridDirection oppositeDirection() {
+    public Direction oppositeDirection() {
 
-        GridDirection opposite = null;
+        Direction opposite = null;
 
         switch (this) {
             case UP:
-                opposite = GridDirection.DOWN;
+                opposite = Direction.DOWN;
                 break;
             case DOWN:
-                opposite = GridDirection.UP;
+                opposite = Direction.UP;
                 break;
             case LEFT:
-                opposite = GridDirection.RIGHT;
+                opposite = Direction.RIGHT;
                 break;
             case RIGHT:
-                opposite = GridDirection.LEFT;
+                opposite = Direction.LEFT;
                 break;
         }
 

@@ -1,20 +1,23 @@
 package org.academiadecodigo.bootcamp;
 
-public abstract class Item {
+import org.academiadecodigo.simplegraphics.pictures.Picture;
 
-    private Position position;
+public abstract class Item{
 
-    public Item(Position position) {
-        this.position = position;
+
+    private Picture pic;
+    private int x;
+    private int y;
+
+    private Cell cell;
+    private Map map;
+
+
+    public Item(Cell cell, Map map){
+        this.x = map.colToX(cell.getCol());
+        this.y = map.rowToY(cell.getRow());
+        this.cell = cell;
+        this.map = map;
+        this.pic = new Picture(x,y,"/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/yellow-dot.png");
     }
-
-    public Item(int col, int row){
-      //  position = new Position(col, row, Map.pacGrid);
-
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
 }

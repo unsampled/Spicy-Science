@@ -20,18 +20,22 @@ public class Player implements Movable, KeyboardHandler {
     private CurrentImageType currentImage;
     private int row;
     private int col;
+    private Direction direction;
 
     private int score;
     private int life;
 
-    public Player(Cell[][] grid,Map map) {
+    public Player(Cell[][] grid, Map map) {
         this.map = map;
         this.grid = grid;
-        this.position = grid[2][2];
+        this.position = grid[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() - 2];
         this.col = position.getCol();
         this.row = position.getRow();
         this.collided = false;
+
         this.score = 0;
+        this.life = 3;
+        this.direction = Direction.RIGHT;
 
         kb = new Keyboard(this);
         setters();
@@ -39,7 +43,7 @@ public class Player implements Movable, KeyboardHandler {
         int picX = map.colToX(position.getCol());
         int picY = map.rowToY(position.getRow());
 
-        p1 = new Picture(picX, picY, "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Player/L1-3.png");
+        p1 = new Picture(picX, picY, "Player/L1-3.png");
         currentImage = CurrentImageType.F1;
         p1.draw();
     }
@@ -56,16 +60,21 @@ public class Player implements Movable, KeyboardHandler {
         return life;
     }
 
-    public void setLife() {
-        life++;
+    public void loseLife(){
+        this.life--;
     }
 
-    public void setScore() {
+    public Direction getDirection() {
+        return direction;
+    }
+
+
+    public void incrementScore() {
         score++;
     }
 
     public void setScore(int score) {
-        this.score = score;
+        this.score += score;
     }
 
     private void setters() {
@@ -91,8 +100,9 @@ public class Player implements Movable, KeyboardHandler {
     }
 
     @Override
-    public boolean comparePos(Position that) {
-        return position.getCol() == that.getCol() && position.getRow() == that.getRow();
+    public boolean samePos(Cell that) {
+
+        return col == that.getCol() && row == that.getRow();
     }
 
     @Override
@@ -100,145 +110,185 @@ public class Player implements Movable, KeyboardHandler {
         return collided;
     }
 
+
     @Override
-    public void moveLeft(CurrentImageType currentImage) {
+    public void setCollided() {
+        collided = true;
         p1.delete();
-        if (position.getCol() > 1) {
-            this.col--;
-        }
-
-        int x = map.colToX(col);
-        int y = map.rowToY(row);
-
-        if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.R1) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/L2.png");
-            this.currentImage = CurrentImageType.L2;
-
-        } else if (currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.R2) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/L1-3.png");
-            this.currentImage = CurrentImageType.L3;
-
-        } else if (currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.R3) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/L4.png");
-            this.currentImage = CurrentImageType.L4;
-
-        } else if (currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.R4) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/L1-3.png");
-            this.currentImage = CurrentImageType.L1;
-        }
-        p1.draw();
+        currentImage = null;
+        position = grid[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() - 2];
     }
 
     @Override
-    public void moveRight(CurrentImageType currentImage) {
-        p1.delete();
-        if (position.getCol() < map.getTOTAL_COLS() - 1) {
-            col++;
+    public void moveLeft() {
+
+        if (grid[col - 1][row].isEmpty()) {
+            p1.delete();
+            if (col > 1) {
+                position = grid[--col][position.getRow()];
+            }
+
+            int x = map.colToX(col);
+            int y = map.rowToY(row);
+
+            if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.R1) {
+                p1 = new Picture(x, y, "Player/L2.png");
+                this.currentImage = CurrentImageType.L2;
+
+            } else if (currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.R2) {
+                p1 = new Picture(x, y, "Player/L1-3.png");
+                this.currentImage = CurrentImageType.L3;
+
+            } else if (currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.R3) {
+                p1 = new Picture(x, y, "Player/L4.png");
+                this.currentImage = CurrentImageType.L4;
+
+            } else if (currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.R4) {
+                p1 = new Picture(x, y, "Player/L1-3.png");
+                this.currentImage = CurrentImageType.L1;
+            }
+            p1.draw();
         }
-
-        int x = map.colToX(col);
-        int y = map.rowToY(row);
-
-        if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/R2.png");
-            this.currentImage = CurrentImageType.R2;
-
-        } else if (currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/R1-3.png");
-            this.currentImage = CurrentImageType.R3;
-
-        } else if (currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/R4.png");
-            this.currentImage = CurrentImageType.R4;
-
-        } else if (currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/R1-3.png");
-            this.currentImage = CurrentImageType.R1;
-        }
-        p1.draw();
     }
 
     @Override
-    public void moveDown(CurrentImageType currentImage) {
-        p1.delete();
-        if (position.getRow() < map.getTOTAL_ROWS() -1) {
-            row++;
+    public void moveRight() {
+        if (grid[col + 1][row].isEmpty()) {
+            p1.delete();
+            if (col < map.getTOTAL_COLS() - 2) {
+                position = grid[++col][position.getRow()];
+            }
+
+            int x = map.colToX(col);
+            int y = map.rowToY(row);
+
+            if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1) {
+                p1 = new Picture(x, y, "Player/R2.png");
+                this.currentImage = CurrentImageType.R2;
+
+            } else if (currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2) {
+                p1 = new Picture(x, y, "Player/R1-3.png");
+                this.currentImage = CurrentImageType.R3;
+
+            } else if (currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3) {
+                p1 = new Picture(x, y, "Player/R4.png");
+                this.currentImage = CurrentImageType.R4;
+
+            } else if (currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4) {
+                p1 = new Picture(x, y, "Player/R1-3.png");
+                this.currentImage = CurrentImageType.R1;
+            }
+            p1.draw();
         }
-
-        int x = map.colToX(col);
-        int y = map.rowToY(row);
-
-        if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/F2.png");
-            this.currentImage = CurrentImageType.F2;
-
-        } else if (currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/F1-3.png");
-            this.currentImage = CurrentImageType.F3;
-
-        } else if (currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/F4.png");
-            this.currentImage = CurrentImageType.F4;
-
-        } else if (currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/F1-3.png");
-            this.currentImage = CurrentImageType.F1;
-        }
-        p1.draw();
     }
 
     @Override
-    public void moveUp(CurrentImageType currentImage) {
-        p1.delete();
-        if (position.getRow() > 1) {
-            row--;
+    public void moveDown() {
+        if (grid[col][row + 1].isEmpty()) {
+            p1.delete();
+            if (row < map.getTOTAL_ROWS() - 2) {
+                position = grid[position.getCol()][++row];
+            }
+
+            int x = map.colToX(col);
+            int y = map.rowToY(row);
+
+            if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1) {
+                p1 = new Picture(x, y, "Player/F2.png");
+                this.currentImage = CurrentImageType.F2;
+
+            } else if (currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2) {
+                p1 = new Picture(x, y, "Player/F1-3.png");
+                this.currentImage = CurrentImageType.F3;
+
+            } else if (currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.F3 || currentImage == CurrentImageType.B3) {
+                p1 = new Picture(x, y, "Player/F4.png");
+                this.currentImage = CurrentImageType.F4;
+
+            } else if (currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.F4 || currentImage == CurrentImageType.B4) {
+                p1 = new Picture(x, y, "Player/F1-3.png");
+                this.currentImage = CurrentImageType.F1;
+            }
+            p1.draw();
         }
+    }
 
-        int x = map.colToX(col);
-        int y = map.rowToY(row);
 
-        if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.F1) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/B2.png");
-            this.currentImage = CurrentImageType.B2;
 
-        } else if (currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.F2) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/B1-3.png");
-            this.currentImage = CurrentImageType.B3;
+    @Override
+    public void moveUp() {
+        if (grid[col][row - 1].isEmpty()) {
+            p1.delete();
+            if (row > 1) {
+                position = grid[position.getCol()][--row];
+            }
 
-        } else if (currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.F3) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/B4.png");
-            this.currentImage = CurrentImageType.B4;
+            int x = map.colToX(col);
+            int y = map.rowToY(row);
 
-        } else if (currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.F4) {
-            p1 = new Picture(x, y, "/Volumes/Untitled/AC_AnnLuar/GitHub/drunk-man/pacmap/resources/Player/B1-3.png");
-            this.currentImage = CurrentImageType.B1;
+            if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.F1) {
+                p1 = new Picture(x, y, "Player/B2.png");
+                this.currentImage = CurrentImageType.B2;
+
+            } else if (currentImage == CurrentImageType.R3 || currentImage == CurrentImageType.L3 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.F2) {
+                p1 = new Picture(x, y, "Player/B1-3.png");
+                this.currentImage = CurrentImageType.B3;
+
+            } else if (currentImage == CurrentImageType.R4 || currentImage == CurrentImageType.L4 || currentImage == CurrentImageType.B3 || currentImage == CurrentImageType.F3) {
+                p1 = new Picture(x, y, "Player/B4.png");
+                this.currentImage = CurrentImageType.B4;
+
+            } else if (currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.B4 || currentImage == CurrentImageType.F4) {
+                p1 = new Picture(x, y, "Player/B1-3.png");
+                this.currentImage = CurrentImageType.B1;
+            }
+            p1.draw();
         }
-        p1.draw();
     }
 
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
         switch (keyboardEvent.getKey()) {
             case KeyboardEvent.KEY_DOWN:
-                moveDown(currentImage);
+                direction = Direction.DOWN;
                 break;
             case KeyboardEvent.KEY_UP:
-                moveUp(currentImage);
+                direction = Direction.UP;
                 break;
             case KeyboardEvent.KEY_LEFT:
-                moveLeft(currentImage);
+                direction = Direction.LEFT;
                 break;
             case KeyboardEvent.KEY_RIGHT:
-                moveRight(currentImage);
+                direction = Direction.RIGHT;
                 break;
             default:
-                System.out.println("não tem outras hipoteses");
+                System.out.println("error. key pressed is not an option");
         }
 
     }
 
     @Override
     public void keyReleased(KeyboardEvent keyboardEvent) {
+
+    }
+
+    public void move() {
+        switch (direction) {
+            case UP:
+                moveUp();
+                break;
+            case DOWN:
+                moveDown();
+                break;
+            case LEFT:
+                moveLeft();
+                break;
+            case RIGHT:
+                moveRight();
+                break;
+            default:
+                System.out.println("error while moving player");
+        }
 
     }
 }

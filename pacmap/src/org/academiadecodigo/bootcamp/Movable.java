@@ -2,15 +2,17 @@ package org.academiadecodigo.bootcamp;
 
 public interface Movable {
 
-    boolean comparePos(Position that);
+    boolean samePos(Cell that);
 
     boolean hasCollided();
 
-    void moveUp(CurrentImageType currentImage);
+    void moveUp();
 
-    void moveLeft(CurrentImageType currentImage);
+    void moveLeft();
 
-    void moveRight(CurrentImageType currentImage);
+    void moveRight();
 
-    void moveDown(CurrentImageType currentImage);
+    void moveDown();
+
+    void setCollided();
 }
