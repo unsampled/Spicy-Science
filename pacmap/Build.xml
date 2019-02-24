@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
-<project name="DrunkMan" default="jarfile">
+<project name="SpicyScience" default="jarfile">
 
     <!-- Initialize build properties  -->
     <target name="init" description="Initializes properties">
-        <property name="project.name" value="DrunkMan" />
+        <property name="project.name" value="SpicyScience" />
         <property name="src.dir" value="src" />
         <property name="main.class" value="org/academiadecodigo/bootcamp/Main" />
         <property name="build.dir" value="build" />

@@ -12,6 +12,7 @@ import org.academiadecodigo.simplegraphics.pictures.Picture;
 public class Player implements Movable, KeyboardHandler {
 
     private Cell position;
+
     private Cell[][] grid;
     private Map map;
     private boolean collided;
@@ -20,28 +21,37 @@ public class Player implements Movable, KeyboardHandler {
     private CurrentImageType currentImage;
     private int row;
     private int col;
-    private Direction direction;
 
-    private int score;
-    private int life;
+    private int picX;
+    private int picY;
+
+    private Direction direction;
+    private Direction lastDirection;
+    private boolean powerActive = false;
+
+    private String beerPowerFileName = "beerPower.png";
+    private Picture beerPowerPicture;
+
 
     public Player(Cell[][] grid, Map map) {
         this.map = map;
         this.grid = grid;
         this.position = grid[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() - 2];
+
+
         this.col = position.getCol();
         this.row = position.getRow();
         this.collided = false;
 
-        this.score = 0;
-        this.life = 3;
         this.direction = Direction.RIGHT;
 
         kb = new Keyboard(this);
         setters();
 
-        int picX = map.colToX(position.getCol());
-        int picY = map.rowToY(position.getRow());
+
+        //+2 por causa do sprite do player (21 em vez de 25)
+        this.picX = map.colToX(position.getCol()) + 2;
+        this.picY = map.rowToY(position.getRow());
 
         p1 = new Picture(picX, picY, "Player/L1-3.png");
         currentImage = CurrentImageType.F1;
@@ -52,29 +62,22 @@ public class Player implements Movable, KeyboardHandler {
         return position;
     }
 
-    public int getScore() {
-        return score;
-    }
-
-    public int getLife() {
-        return life;
-    }
-
-    public void loseLife(){
-        this.life--;
-    }
 
     public Direction getDirection() {
         return direction;
     }
 
-
-    public void incrementScore() {
-        score++;
+    public void setDirection(Direction direction) {
+        this.direction = direction;
     }
 
-    public void setScore(int score) {
-        this.score += score;
+
+    public void dotScore() {
+        map.increaseScore(+1);
+    }
+
+    public void beerScore() {
+        map.increaseScore(+50);
     }
 
     private void setters() {
@@ -97,6 +100,7 @@ public class Player implements Movable, KeyboardHandler {
         pressRight.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
         pressRight.setKey(KeyboardEvent.KEY_RIGHT);
         kb.addEventListener(pressRight);
+
     }
 
     @Override
@@ -112,15 +116,34 @@ public class Player implements Movable, KeyboardHandler {
 
 
     @Override
-    public void setCollided() {
-        collided = true;
-        p1.delete();
-        currentImage = null;
-        position = grid[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() - 2];
+    public void setCollided(boolean collided) {
+        this.collided = collided;
+        try {
+            Thread.sleep(300);
+            p1.delete();
+            Thread.sleep(300);
+            p1.draw();
+            Thread.sleep(300);
+            p1.delete();
+            Thread.sleep(300);
+
+        } catch (InterruptedException e) {
+            e.getMessage();
+            System.out.println("error during collision");
+        } finally {
+            position = grid[map.getTOTAL_COLS() - 1][map.getTOTAL_ROWS() - 1];
+            this.picX = map.colToX(position.getCol()) + 2;
+            this.picY = map.rowToY(position.getRow());
+
+            p1 = new Picture(picX, picY, "Player/L1-3.png");
+        }
+
+
     }
 
+
     @Override
-    public void moveLeft() {
+    public boolean moveLeft() {
 
         if (grid[col - 1][row].isEmpty()) {
             p1.delete();
@@ -128,7 +151,8 @@ public class Player implements Movable, KeyboardHandler {
                 position = grid[--col][position.getRow()];
             }
 
-            int x = map.colToX(col);
+            //+2 por causa do sprite do player (21 em vez de 25)
+            int x = map.colToX(col) + 2;
             int y = map.rowToY(row);
 
             if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.L1 || currentImage == CurrentImageType.R1) {
@@ -148,18 +172,22 @@ public class Player implements Movable, KeyboardHandler {
                 this.currentImage = CurrentImageType.L1;
             }
             p1.draw();
+            return true;
         }
+
+        return false;
     }
 
     @Override
-    public void moveRight() {
+    public boolean moveRight() {
         if (grid[col + 1][row].isEmpty()) {
             p1.delete();
             if (col < map.getTOTAL_COLS() - 2) {
                 position = grid[++col][position.getRow()];
             }
 
-            int x = map.colToX(col);
+            //+2 por causa do sprite do player (21 em vez de 25)
+            int x = map.colToX(col) + 2;
             int y = map.rowToY(row);
 
             if (currentImage == CurrentImageType.F2 || currentImage == CurrentImageType.B2 || currentImage == CurrentImageType.R1 || currentImage == CurrentImageType.L1) {
@@ -179,18 +207,21 @@ public class Player implements Movable, KeyboardHandler {
                 this.currentImage = CurrentImageType.R1;
             }
             p1.draw();
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void moveDown() {
+    public boolean moveDown() {
         if (grid[col][row + 1].isEmpty()) {
             p1.delete();
             if (row < map.getTOTAL_ROWS() - 2) {
                 position = grid[position.getCol()][++row];
             }
 
-            int x = map.colToX(col);
+            //+2 por causa do sprite do player (21 em vez de 25)
+            int x = map.colToX(col) + 2;
             int y = map.rowToY(row);
 
             if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.F1 || currentImage == CurrentImageType.B1) {
@@ -210,20 +241,22 @@ public class Player implements Movable, KeyboardHandler {
                 this.currentImage = CurrentImageType.F1;
             }
             p1.draw();
+            return true;
         }
+        return false;
     }
 
 
-
     @Override
-    public void moveUp() {
+    public boolean moveUp() {
         if (grid[col][row - 1].isEmpty()) {
             p1.delete();
             if (row > 1) {
                 position = grid[position.getCol()][--row];
             }
 
-            int x = map.colToX(col);
+            //+2 por causa do sprite do player (21 em vez de 25)
+            int x = map.colToX(col) + 2;
             int y = map.rowToY(row);
 
             if (currentImage == CurrentImageType.R2 || currentImage == CurrentImageType.L2 || currentImage == CurrentImageType.B1 || currentImage == CurrentImageType.F1) {
@@ -243,7 +276,9 @@ public class Player implements Movable, KeyboardHandler {
                 this.currentImage = CurrentImageType.B1;
             }
             p1.draw();
+            return true;
         }
+        return false;
     }
 
     @Override
@@ -272,22 +307,78 @@ public class Player implements Movable, KeyboardHandler {
 
     }
 
+    private void drawBeerPower() {
+        int x = map.colToX(col);
+        int y = map.rowToY(row);
+
+        String path = "/Player/";
+
+        beerPowerPicture = new Picture(x, y, path + beerPowerFileName);
+        beerPowerPicture.draw();
+
+    }
+
+    private void beerPowerActive() {
+
+        if (beerPowerPicture == null) {
+            drawBeerPower();
+        } else if (beerPowerFileName.equals("beerPower.png")) {
+            beerPowerPicture.delete();
+            beerPowerFileName = "beerPower2.png";
+            drawBeerPower();
+        } else {
+            beerPowerPicture.delete();
+            beerPowerFileName = "beerPower.png";
+            drawBeerPower();
+        }
+    }
+
+    public void setPowerActive(boolean powerActive) {
+        this.powerActive = powerActive;
+        if (!powerActive) {
+            beerPowerPicture.delete();
+        }
+    }
+
     public void move() {
-        switch (direction) {
-            case UP:
-                moveUp();
-                break;
-            case DOWN:
-                moveDown();
-                break;
-            case LEFT:
-                moveLeft();
-                break;
-            case RIGHT:
-                moveRight();
-                break;
-            default:
-                System.out.println("error while moving player");
+        if (!collided) {
+
+            switch (direction) {
+                case UP:
+                    if (!moveUp()) {
+                        direction = lastDirection;
+                    } else {
+                        lastDirection = direction;
+                    }
+                    break;
+                case DOWN:
+                    if (!moveDown()) {
+                        direction = lastDirection;
+                    } else {
+                        lastDirection = direction;
+                    }
+                    break;
+                case LEFT:
+                    if (!moveLeft() && lastDirection != direction) {
+                        direction = lastDirection;
+                    } else {
+                        lastDirection = direction;
+                    }
+                    break;
+                case RIGHT:
+                    if (!moveRight()) {
+                        direction = lastDirection;
+                    } else {
+                        lastDirection = direction;
+                    }
+                    break;
+                default:
+                    System.out.println("error while moving player");
+                    break;
+            }
+            if (powerActive) {
+                beerPowerActive();
+            }
         }
 
     }

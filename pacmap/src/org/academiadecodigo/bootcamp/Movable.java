@@ -6,13 +6,13 @@ public interface Movable {
 
     boolean hasCollided();
 
-    void moveUp();
+    boolean moveUp();
 
-    void moveLeft();
+    boolean moveLeft();
 
-    void moveRight();
+    boolean moveRight();
 
-    void moveDown();
+    boolean moveDown();
 
-    void setCollided();
+    void setCollided(boolean collided);
 }

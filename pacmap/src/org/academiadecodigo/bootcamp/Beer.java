@@ -56,6 +56,7 @@ public class Beer extends Item implements Consumable {
     public void consume() {
         this.consumed = true;
         hide();
+        position = map.getGrid()[map.getTOTAL_COLS()-1][map.getTOTAL_ROWS() - 1];
     }
 
     public Cell getPosition() {

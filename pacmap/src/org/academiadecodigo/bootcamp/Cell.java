@@ -33,16 +33,5 @@ public class Cell {
     }
 
 
-    @Override
-    public boolean equals(Object o) {
-        if(o instanceof Cell){
-           Cell cell = (Cell) o;
-           if (col == cell.getCol() && row == cell.getRow()){
-               return true;
-           }
-        }
-        return false;
-    }
-
 
 }

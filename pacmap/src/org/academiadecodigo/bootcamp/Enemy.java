@@ -8,16 +8,28 @@ public class Enemy implements Movable, Consumable {
     private Map map;
     private Cell[][] grid;
     private Cell position;
+    private Cell lastPosition;
+
     private Direction direction;
+    private Direction lastDirection;
+
     private int x;
     private int y;
     private int row;
     private int col;
-    private boolean consumable = false;
+
+    private boolean collided;
+    private boolean consumable;
+
     private boolean consumed;
 
 
     public Enemy(Map map, Cell[][] grid) {
+
+        this.collided = false;
+        this.consumable = false;
+        this.consumed = false;
+
 
         this.map = map;
         this.grid = grid;
@@ -46,6 +58,18 @@ public class Enemy implements Movable, Consumable {
         return position;
     }
 
+    public Cell getLastPosition() {
+        return lastPosition;
+    }
+
+    public Direction getDirection() {
+        return direction;
+    }
+
+    public Direction getLastDirection() {
+        return lastDirection;
+    }
+
     private void chooseDirection() {
 
 
@@ -67,19 +91,35 @@ public class Enemy implements Movable, Consumable {
 
 
     public void move() {
-        if (!consumed) {
+        if (!collided) {
             switch (direction) {
                 case UP:
-                    moveUp();
+                    if (!moveUp()) {
+                        lastDirection = direction;
+                        chooseDirection();
+                        move();
+                    }
                     break;
                 case DOWN:
-                    moveDown();
+                    if (!moveDown()) {
+                        lastDirection = direction;
+                        chooseDirection();
+                        move();
+                    }
                     break;
                 case LEFT:
-                    moveLeft();
+                    if (!moveLeft()) {
+                        lastDirection = direction;
+                        chooseDirection();
+                        move();
+                    }
                     break;
                 case RIGHT:
-                    moveRight();
+                    if (!moveRight()) {
+                        lastDirection = direction;
+                        chooseDirection();
+                        move();
+                    }
                     break;
             }
         }
@@ -87,59 +127,89 @@ public class Enemy implements Movable, Consumable {
     }
 
     @Override
-    public void moveLeft() {
+    public boolean moveLeft() {
         if (grid[col - 1][row].isEmpty()) {
 
+            lastPosition = position;
             position = grid[--col][position.getRow()];
             enemyPic.translate(-map.getCELL_SIZE(), 0);
             enemyPic.draw();
-        } else {
-            chooseDirection();
+            return true;
         }
+        return false;
 
     }
 
     @Override
-    public void moveRight() {
+    public boolean moveRight() {
         if (grid[col + 1][row].isEmpty()) {
 
+            lastPosition = position;
             position = grid[++col][position.getRow()];
             enemyPic.translate(map.getCELL_SIZE(), 0);
             enemyPic.draw();
-
-        } else {
-            chooseDirection();
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void moveDown() {
+    public boolean moveDown() {
         if (grid[col][row + 1].isEmpty()) {
 
+            lastPosition = position;
             position = grid[position.getCol()][++row];
             enemyPic.translate(0, map.getCELL_SIZE());
             enemyPic.draw();
-        } else {
-            chooseDirection();
+            return true;
         }
-    }
-
-    @Override
-    public void setCollided() {
-
+        return false;
     }
 
 
     @Override
-    public void moveUp() {
+    public boolean moveUp() {
         if (grid[col][row - 1].isEmpty()) {
+
+            lastPosition = position;
             position = grid[position.getCol()][--row];
             enemyPic.translate(0, -map.getCELL_SIZE());
             enemyPic.draw();
-        } else {
-            chooseDirection();
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public void setCollided(boolean collided) {
+
+        this.collided = collided;
+        hide();
+        position = grid[map.getTOTAL_COLS() - 1][map.getTOTAL_ROWS() - 1];
+        // > act - init = - valor
+        // < act - init = + valor
+
+    }
+
+    public void resetPos() {
+        int resetCol = position.getCol() - (map.getTOTAL_COLS() / 2);
+        int resetRow = position.getRow() - (map.getTOTAL_ROWS() / 2);
+
+        //RESET COLS
+        if (position.getCol() > (map.getTOTAL_COLS() / 2)) {
+            enemyPic.translate(-map.colToX(resetCol), 0);
+        } else if (position.getCol() < (map.getTOTAL_COLS() / 2)) {
+            enemyPic.translate(map.colToX(resetCol), 0);
+        }
+
+        //RESET ROWS
+        if (position.getRow() > map.getTOTAL_COLS() / 2) {
+            enemyPic.translate(0, -map.rowToY(resetRow));
+        } else if (position.getRow() < map.getTOTAL_ROWS() / 2) {
+            enemyPic.translate(0, map.rowToY(resetRow));
         }
     }
+
 
     @Override
     public void show() {
@@ -159,14 +229,15 @@ public class Enemy implements Movable, Consumable {
 
     @Override
     public boolean isConsumed() {
-        return consumed;
+        //return consumed;
+        return false;
     }
 
     @Override
     public void consume() {
-        this.consumed = true;
-        hide();
-        position = grid[map.getTOTAL_COLS() - 1][map.getTOTAL_ROWS() - 1];
+    //    this.consumed = true;
+    //    hide();
+    //    position = grid[map.getTOTAL_COLS() - 1][map.getTOTAL_ROWS() - 1];
     }
 
     @Override
@@ -176,7 +247,7 @@ public class Enemy implements Movable, Consumable {
 
     @Override
     public boolean hasCollided() {
-        return false;
+        return collided;
     }
 
 }

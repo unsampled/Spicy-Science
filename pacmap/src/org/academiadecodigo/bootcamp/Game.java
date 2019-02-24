@@ -1,5 +1,7 @@
 package org.academiadecodigo.bootcamp;
 
+import org.academiadecodigo.simplegraphics.pictures.Picture;
+
 public class Game {
 
     private Map map;
@@ -7,12 +9,40 @@ public class Game {
     private Enemy[] enemies;
     private Beer[] beers;
     private Dot[] dots;
-    private int dotCounter = 0;
+
+    //used to populate dots array
+    private int dotCounter;
+    private int eatenDots = 0;
+    private int playerLives = 3;
+
+
+    private MyKeyboard menuKB = new MyKeyboard(this);
+    private Menu menu = new Menu(menuKB);
 
     private final int NUMBEROFBEER = 4;
     private Cell[] beerPos = new Cell[NUMBEROFBEER];
 
     private final int NUMBEROFENEMIES = 5;
+
+    public void menu(){
+        //menu.draw();
+
+        while (menuKB.showMenu()) {
+            try {
+                Thread.sleep(600);
+                menu.draw();
+                Thread.sleep(600);
+                menu.delete();
+
+            } catch (InterruptedException e) {
+                e.getMessage();
+                System.out.println("error during collision");
+            }
+        }
+
+        menu.exitMenu();
+        init();
+    }
 
 
     public void init() {
@@ -21,15 +51,22 @@ public class Game {
         this.enemies = new Enemy[NUMBEROFENEMIES];
         this.player1 = new Player(map.getGrid(), map);
         this.beers = new Beer[NUMBEROFBEER];
-        this.dots = new Dot[countFreeCells()-1];
+        this.dots = new Dot[countFreeCells() - 1];
 
         popDots();
         popEnemies();
         popBeer();
 
+        try {
+            start();
+        } catch (InterruptedException e) {
+            e.getMessage();
+            System.out.println("error while starting game");
+        }
+
     }
 
-    public void start() throws InterruptedException {
+    private void start() throws InterruptedException {
 
 
         for (int i = 0; i < beerPos.length; i++) {
@@ -37,7 +74,10 @@ public class Game {
         }
         map.getGrid()[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() / 2].setEmpty();
 
-        while (true) {
+
+        System.out.println("total dots: " + (dots.length - 1));
+
+        while (playerLives > 0) {
             Thread.sleep(200);
             player1.move();
             for (int i = 0; i < enemies.length; i++) {
@@ -47,6 +87,7 @@ public class Game {
 
             checkCollisions();
         }
+
     }
 
     public void popBeer() {
@@ -72,21 +113,20 @@ public class Game {
 
     public void popDots() {
         map.getGrid()[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() / 2].setFull();
-        int dotIncrement = 0;
+        dotCounter = 0;
 
         for (int o = 0; o < map.getTOTAL_COLS(); o++) {
             for (int i = 0; i < map.getTOTAL_ROWS(); i++) {
                 if (map.getGrid()[o][i].isEmpty()) {
-
                     Dot dot = new Dot(map.getGrid()[o][i], map);
-                    dots[dotIncrement++] = dot;
+                    dots[dotCounter++] = dot;
                     dot.show();
                 }
             }
         }
     }
 
-    public int countFreeCells(){
+    public int countFreeCells() {
         for (int o = 0; o < map.getTOTAL_COLS(); o++) {
             for (int i = 0; i < map.getTOTAL_ROWS(); i++) {
                 if (map.getGrid()[o][i].isEmpty()) {
@@ -107,66 +147,121 @@ public class Game {
 
     public void checkCollisions() {
         int enemiesEaten = 0;
+
         for (Enemy enemy : enemies) {
             if (player1.samePos(enemy.getPosition()) && !enemy.isConsumable()) {
 
+                player1.setCollided(true);
+
                 try {
-                    Thread.sleep(1000);
-                    player1.setCollided();
 
-                    //player set initial position
+                    player1 = new Player(map.getGrid(), map);
+                    playerLives--;
+                    map.decreaseLife(1);
+
+                    System.out.println("lives left: " + playerLives);
+                    enemy.setCollided(true);
+                    Thread.sleep(500);
+
                 } catch (InterruptedException e) {
-
+                    e.getMessage();
                     System.out.println("error while dying");
                 }
-                player1.loseLife();
-
-                return;
+                for (int i = 0; i < enemies.length; i++) {
+                    enemies[i].hide();
+                    enemies[i] = new Enemy(map, map.getGrid());
+                    enemies[i].getPosition().setEmpty();
+                    enemies[i].setCollided(false);
+                }
+                checkPlayerLives(playerLives);
             }
-            if(player1.samePos(enemy.getPosition()) && enemy.isConsumable()){
-                if(enemiesEaten == 0){
-                    enemy.consume();
+
+            else if (player1.samePos(enemy.getPosition()) && enemy.isConsumable()) {
+                if (enemiesEaten == 0) {
+                    enemy.setCollided(true);
                     enemiesEaten++;
+                    player1.setPowerActive(false);
                     setEnemiesToNotConsumable();
-                    System.out.println(enemiesEaten);
+                    System.out.println("consumed enemy");
+
                 }
 
-                System.out.println("consumed enemy");
             }
         }
 
-        for(Beer beer : beers){
-            if(player1.samePos(beer.getPosition())){
+        for (Beer beer : beers) {
+            if (player1.samePos(beer.getPosition())) {
                 beer.consume();
-                player1.setScore(50);
-                setEnemiesToConsumable();
+                player1.beerScore();
 
+                setEnemiesToConsumable();
+                player1.setPowerActive(true);
                 enemiesEaten = 0;
                 System.out.println(enemiesEaten);
             }
         }
 
-        for(Dot dot : dots){
-            if (player1.samePos(dot.getPosition())){
+        for (Dot dot : dots) {
+            if (player1.samePos(dot.getPosition())) {
                 dot.consume();
-                player1.incrementScore();
+                eatenDots = eatenDots + 1;
+                dotsCheck(dotCounter, eatenDots);
+                player1.dotScore();
             }
         }
 
     }
 
-    public void setEnemiesToConsumable(){
-        for(Enemy enemy : enemies){
+    public void setEnemiesToConsumable() {
+        for (Enemy enemy : enemies) {
             enemy.setConsumable(true);
         }
         System.out.println("enemies consumable");
     }
 
-    public void setEnemiesToNotConsumable(){
-        for(Enemy enemy : enemies){
+    public void setEnemiesToNotConsumable() {
+        for (Enemy enemy : enemies) {
             enemy.setConsumable(false);
 
         }
         System.out.println("enemies not consumable");
+    }
+
+    public void checkPlayerLives(int playerLives) {
+        if (playerLives == 0) {
+            player1.setCollided(true);
+            for (int i = 0; i < enemies.length; i++) {
+                enemies[i].setCollided(true);
+            }
+            Picture gameover = new Picture(map.getPADDING(), map.getPADDING(), "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Menus/GameOver.png");
+            gameover.draw();
+        }
+    }
+
+    public void dotsCheck(int dotCounter, int eatenDots) {
+        if (dotCounter == eatenDots) {
+
+            player1.setCollided(true);
+
+            for (int i = 0; i < enemies.length; i++) {
+                enemies[i].setCollided(true);
+            }
+
+
+            System.out.println("YAAAAAAAAY");
+            try {
+                Thread.sleep(500);
+                for (int i = 0; i < enemies.length; i++) {
+                    enemies[i].setCollided(true);
+                }
+                player1.setCollided(true);
+                Picture youwin = new Picture(map.getPADDING(), map.getPADDING(), "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Menus/youwin.png");
+                youwin.draw();
+            } catch (InterruptedException e) {
+                e.getMessage();
+                System.out.println("error while winning");
+            }
+
+        }
     }
 }
