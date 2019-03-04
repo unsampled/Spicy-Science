@@ -26,7 +26,7 @@ public class Dot extends Item implements Consumable {
         this.y = map.rowToY(position.getRow());
         this.position = position;
         this.map = map;
-        picture = new Picture(x,y,"/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/yellow-dot.png");
+        picture = new Picture(x,y,"Items/yellow-dot.png");
     }
 
     @Override

@@ -42,7 +42,7 @@ public class Enemy implements Movable, Consumable {
 
         x = map.colToX(col);
         y = map.rowToY(row);
-        enemyPic = new Picture(x, y, "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Enemies/EnemyO.png");
+        enemyPic = new Picture(x, y, "Enemies/EnemyO.png");
         enemyPic.draw();
     }
 

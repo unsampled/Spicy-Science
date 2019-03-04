@@ -18,6 +18,6 @@ public abstract class Item{
         this.y = map.rowToY(cell.getRow());
         this.cell = cell;
         this.map = map;
-        this.pic = new Picture(x,y,"/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/yellow-dot.png");
+        this.pic = new Picture(x,y,"Items/yellow-dot.png");
     }
 }

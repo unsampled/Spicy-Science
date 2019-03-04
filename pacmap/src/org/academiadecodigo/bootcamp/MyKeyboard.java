@@ -13,11 +13,13 @@ public class MyKeyboard implements KeyboardHandler {
     private Keyboard kb;
     private Game game;
     private boolean showMenu;
+    private boolean gameOver;
 
-    public MyKeyboard(Game game){
+    public MyKeyboard(Game game) {
 
         this.game = game;
         showMenu = true;
+        gameOver = false;
         kb = new Keyboard(this);
         setKeys();
     }
@@ -26,11 +28,21 @@ public class MyKeyboard implements KeyboardHandler {
         return showMenu;
     }
 
+    public void setGameOver() {
+        this.gameOver = true;
+    }
+
     @Override
     public void keyPressed(KeyboardEvent keyboardEvent) {
         switch (keyboardEvent.getKey()) {
             case KeyboardEvent.KEY_SPACE:
                 showMenu = false;
+                break;
+            case KeyboardEvent.KEY_Q:
+                if(gameOver){
+                    System.exit(0);
+                }
+
                 break;
             default:
                 System.out.println("error. key pressed is not an option");
@@ -42,11 +54,17 @@ public class MyKeyboard implements KeyboardHandler {
 
     }
 
-    private void setKeys(){
+    private void setKeys() {
 
         KeyboardEvent press_Space = new KeyboardEvent();
         press_Space.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
         press_Space.setKey(KeyboardEvent.KEY_SPACE);
         kb.addEventListener(press_Space);
+
+
+        KeyboardEvent press_Q = new KeyboardEvent();
+        press_Q.setKeyboardEventType(KeyboardEventType.KEY_PRESSED);
+        press_Q.setKey(KeyboardEvent.KEY_Q);
+        kb.addEventListener(press_Q);
     }
 }

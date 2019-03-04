@@ -26,7 +26,7 @@ public class Beer extends Item implements Consumable {
         this.y = map.rowToY(position.getRow());
         this.position = position;
         this.map = map;
-        picture = new Picture(x, y, "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Items/beer.png");
+        picture = new Picture(x, y, "Items/beer.png");
         show();
     }
 

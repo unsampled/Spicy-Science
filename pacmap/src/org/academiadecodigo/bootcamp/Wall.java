@@ -79,7 +79,7 @@ public class Wall {
 
 
     private void drawWall(String file){
-        pic = new Picture(x, y,"/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Walls/" + file);
+        pic = new Picture(x, y,"Walls/" + file);
         pic.draw();
     }
 

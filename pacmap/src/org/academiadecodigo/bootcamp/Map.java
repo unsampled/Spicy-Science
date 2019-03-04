@@ -67,7 +67,7 @@ public class Map {
         popCells();
 
         try {
-            load("/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Saves/save");
+            load("/Users/codecadet/Downloads/drunk-man/pacmap/resources/Saves/save");
         } catch (IOException e) {
             System.out.println("Error while loading file");
             e.getMessage();

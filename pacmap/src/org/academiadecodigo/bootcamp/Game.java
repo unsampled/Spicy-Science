@@ -2,6 +2,13 @@ package org.academiadecodigo.bootcamp;
 
 import org.academiadecodigo.simplegraphics.pictures.Picture;
 
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+
 public class Game {
 
     private Map map;
@@ -73,11 +80,9 @@ public class Game {
             beerPos[i].setEmpty();
         }
         map.getGrid()[map.getTOTAL_COLS() / 2][map.getTOTAL_ROWS() / 2].setEmpty();
-
-
-        System.out.println("total dots: " + (dots.length - 1));
-
+        playSound("gameMusic");
         while (playerLives > 0) {
+
             Thread.sleep(200);
             player1.move();
             for (int i = 0; i < enemies.length; i++) {
@@ -158,10 +163,9 @@ public class Game {
                     player1 = new Player(map.getGrid(), map);
                     playerLives--;
                     map.decreaseLife(1);
-
-                    System.out.println("lives left: " + playerLives);
+                    playSound("loseLife");
                     enemy.setCollided(true);
-                    Thread.sleep(500);
+                    Thread.sleep(800);
 
                 } catch (InterruptedException e) {
                     e.getMessage();
@@ -178,11 +182,11 @@ public class Game {
 
             else if (player1.samePos(enemy.getPosition()) && enemy.isConsumable()) {
                 if (enemiesEaten == 0) {
+                    playSound("eatEnemy");
                     enemy.setCollided(true);
                     enemiesEaten++;
                     player1.setPowerActive(false);
                     setEnemiesToNotConsumable();
-                    System.out.println("consumed enemy");
 
                 }
 
@@ -193,17 +197,18 @@ public class Game {
             if (player1.samePos(beer.getPosition())) {
                 beer.consume();
                 player1.beerScore();
-
+                playSound("beer");
                 setEnemiesToConsumable();
                 player1.setPowerActive(true);
                 enemiesEaten = 0;
-                System.out.println(enemiesEaten);
+
             }
         }
 
         for (Dot dot : dots) {
             if (player1.samePos(dot.getPosition())) {
                 dot.consume();
+                playSound("dot");
                 eatenDots = eatenDots + 1;
                 dotsCheck(dotCounter, eatenDots);
                 player1.dotScore();
@@ -212,11 +217,30 @@ public class Game {
 
     }
 
+    public void playSound(String fileName){
+        try
+        {
+            FileInputStream fis = new FileInputStream("/Users/codecadet/Downloads/drunk-man/pacmap/resources/SoundEffects/" + fileName + ".wav");
+            InputStream bufferedIn = new BufferedInputStream(fis);
+            AudioInputStream audioIn = AudioSystem.getAudioInputStream(bufferedIn);
+            Clip clip = AudioSystem.getClip();
+            clip.open(audioIn);
+            clip.start();
+            if(fileName.equals("gameMusic")){
+                clip.loop(69);
+            }
+
+        }
+        catch (Exception exc)
+        {
+            exc.printStackTrace(System.out);
+        }
+    }
+
     public void setEnemiesToConsumable() {
         for (Enemy enemy : enemies) {
             enemy.setConsumable(true);
         }
-        System.out.println("enemies consumable");
     }
 
     public void setEnemiesToNotConsumable() {
@@ -224,7 +248,6 @@ public class Game {
             enemy.setConsumable(false);
 
         }
-        System.out.println("enemies not consumable");
     }
 
     public void checkPlayerLives(int playerLives) {
@@ -233,8 +256,12 @@ public class Game {
             for (int i = 0; i < enemies.length; i++) {
                 enemies[i].setCollided(true);
             }
-            Picture gameover = new Picture(map.getPADDING(), map.getPADDING(), "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Menus/GameOver.png");
+            playSound("gameover");
+
+            Picture gameover = new Picture(map.getPADDING(), map.getPADDING(), "Menus/GameOver.png");
             gameover.draw();
+            menuKB.setGameOver();
+
         }
     }
 
@@ -247,16 +274,17 @@ public class Game {
                 enemies[i].setCollided(true);
             }
 
+            playSound("win");
 
-            System.out.println("YAAAAAAAAY");
             try {
                 Thread.sleep(500);
                 for (int i = 0; i < enemies.length; i++) {
                     enemies[i].setCollided(true);
                 }
                 player1.setCollided(true);
-                Picture youwin = new Picture(map.getPADDING(), map.getPADDING(), "/Users/codecadet/dev/testdm/drunk-man/pacmap/resources/Menus/youwin.png");
+                Picture youwin = new Picture(map.getPADDING(), map.getPADDING(), "Menus/youwin.png");
                 youwin.draw();
+                menuKB.setGameOver();
             } catch (InterruptedException e) {
                 e.getMessage();
                 System.out.println("error while winning");
